@@ -97,7 +97,7 @@
   }
 
   /* Classe para transição suave entre todas as mudanças de propriedade */
-  .transition-all {
+  .smooth-transition {
     @apply transition-all duration-300 ease-in-out;
   }
 
@@ -108,11 +108,13 @@
 
   /* Classe para cartões com elevação */
   .card-elevated {
-    @apply bg-card rounded-lg p-6 shadow-soft transition-all hover:shadow-md;
+    @apply bg-card rounded-lg p-6 shadow-soft hover:shadow-md;
+    transition: all 0.3s ease-in-out;
   }
 
   /* Classe para elementos interativos */
   .interactive {
-    @apply transition-all hover:scale-[1.02] active:scale-[0.98];
+    transition: all 0.3s ease-in-out;
+    @apply hover:scale-[1.02] active:scale-[0.98];
   }
 }
