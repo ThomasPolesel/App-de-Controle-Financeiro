@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Transacao, TipoTransacao, BalancoMensal } from '../models/Transacao';
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 // Interface do contexto
 interface FinancasContextType {
