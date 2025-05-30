@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select';
 import { useFinancas } from '@/contexts/FinancasContext';
 import { TipoTransacao } from '@/models/Transacao';
-import { ArrowDownCircle, ArrowUpCircle, Banknote, TrendingDown, TrendingUp } from 'lucide-react';
+import { ArrowDownCircle, ArrowUpCircle, Banknote, TrendingDown, TrendingUp, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const formatCurrency = (value: number) => {
@@ -40,6 +40,7 @@ const Dashboard = () => {
   } = useFinancas();
 
   const [novoSaldoInicial, setNovoSaldoInicial] = useState(saldoInicial.toString());
+  const [saldoExtra, setSaldoExtra] = useState('');
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState('');
   const [tipo, setTipo] = useState<TipoTransacao>('receita');
@@ -74,6 +75,14 @@ const Dashboard = () => {
     }
   };
 
+  const adicionarSaldoExtra = () => {
+    const valor = parseFloat(saldoExtra);
+    if (!isNaN(valor) && valor > 0) {
+      setSaldoInicial(saldoInicial + valor);
+      setSaldoExtra('');
+    }
+  };
+
   const submeterTransacao = (e: React.FormEvent) => {
     e.preventDefault();
     const valorNumerico = parseFloat(valor);
@@ -90,13 +99,13 @@ const Dashboard = () => {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="md:col-span-1">
           <CardHeader>
-            <CardTitle className="text-lg font-medium">Saldo Inicial</CardTitle>
-            <CardDescription>Configure o valor inicial disponível</CardDescription>
+            <CardTitle className="text-lg font-medium">Configurar Saldo</CardTitle>
+            <CardDescription>Defina ou adicione valor ao saldo inicial</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="saldo-inicial">Valor Inicial (R$)</Label>
+                <Label htmlFor="saldo-inicial">Redefinir Saldo Inicial (R$)</Label>
                 <div className="flex gap-2">
                   <Input
                     id="saldo-inicial"
@@ -105,8 +114,31 @@ const Dashboard = () => {
                     onChange={(e) => setNovoSaldoInicial(e.target.value)}
                     placeholder="0,00"
                   />
-                  <Button onClick={atualizarSaldoInicial}>Atualizar</Button>
+                  <Button onClick={atualizarSaldoInicial}>Definir</Button>
                 </div>
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="saldo-extra">Adicionar Saldo Extra (R$)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="saldo-extra"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={saldoExtra}
+                    onChange={(e) => setSaldoExtra(e.target.value)}
+                    placeholder="0,00"
+                  />
+                  <Button onClick={adicionarSaldoExtra} variant="outline">
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Este valor será adicionado ao saldo inicial atual
+                </p>
               </div>
             </div>
           </CardContent>
