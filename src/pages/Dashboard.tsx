@@ -1,66 +1,73 @@
-
-import React, { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { 
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { useFinancas } from '@/contexts/FinancasContext';
-import { TipoTransacao } from '@/models/Transacao';
-import { ArrowDownCircle, ArrowUpCircle, Banknote, TrendingDown, TrendingUp, Plus } from 'lucide-react';
-import { cn } from '@/lib/utils';
+  SelectValue,
+} from "@/components/ui/select";
+import { useFinancas } from "@/contexts/FinancasContext";
+import { TipoTransacao } from "@/models/Transacao";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Banknote,
+  TrendingDown,
+  TrendingUp,
+  Plus,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', { 
-    style: 'currency', 
-    currency: 'BRL' 
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
   }).format(value);
 };
 
 const Dashboard = () => {
-  const { 
-    saldoInicial, 
+  const {
+    saldoInicial,
     setSaldoInicial,
     saldoAtual,
     adicionarTransacao,
-    transacoes
+    transacoes,
   } = useFinancas();
 
-  const [novoSaldoInicial, setNovoSaldoInicial] = useState(saldoInicial.toString());
-  const [saldoExtra, setSaldoExtra] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [valor, setValor] = useState('');
-  const [tipo, setTipo] = useState<TipoTransacao>('receita');
+  const [novoSaldoInicial, setNovoSaldoInicial] = useState(
+    saldoInicial.toString()
+  );
+  const [saldoExtra, setSaldoExtra] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [valor, setValor] = useState("");
+  const [tipo, setTipo] = useState<TipoTransacao>("receita");
 
   // Calcular receitas e despesas do mês atual
   const dataAtual = new Date();
   const mesAtual = dataAtual.getMonth();
   const anoAtual = dataAtual.getFullYear();
 
-  const transacoesMes = transacoes.filter(t => 
-    t.data.getMonth() === mesAtual && 
-    t.data.getFullYear() === anoAtual
+  const transacoesMes = transacoes.filter(
+    (t) => t.data.getMonth() === mesAtual && t.data.getFullYear() === anoAtual
   );
 
   const receitasMes = transacoesMes
-    .filter(t => t.tipo === 'receita')
+    .filter((t) => t.tipo === "receita")
     .reduce((total, t) => total + t.valor, 0);
 
   const despesasMes = transacoesMes
-    .filter(t => t.tipo === 'despesa')
+    .filter((t) => t.tipo === "despesa")
     .reduce((total, t) => total + t.valor, 0);
 
   // Últimas 5 transações
@@ -79,18 +86,18 @@ const Dashboard = () => {
     const valor = parseFloat(saldoExtra);
     if (!isNaN(valor) && valor > 0) {
       setSaldoInicial(saldoInicial + valor);
-      setSaldoExtra('');
+      setSaldoExtra("");
     }
   };
 
   const submeterTransacao = (e: React.FormEvent) => {
     e.preventDefault();
     const valorNumerico = parseFloat(valor);
-    
+
     if (descricao.trim() && !isNaN(valorNumerico) && valorNumerico > 0) {
       adicionarTransacao(descricao, valorNumerico, tipo);
-      setDescricao('');
-      setValor('');
+      setDescricao("");
+      setValor("");
     }
   };
 
@@ -99,13 +106,19 @@ const Dashboard = () => {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="md:col-span-1">
           <CardHeader>
-            <CardTitle className="text-lg font-medium">Configurar Saldo</CardTitle>
-            <CardDescription>Defina ou adicione valor ao saldo inicial</CardDescription>
+            <CardTitle className="text-lg font-medium">
+              Configurar Saldo
+            </CardTitle>
+            <CardDescription>
+              Defina ou adicione valor ao saldo inicial
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="saldo-inicial">Redefinir Saldo Inicial (R$)</Label>
+                <Label htmlFor="saldo-inicial">
+                  Redefinir Saldo Inicial (R$)
+                </Label>
                 <div className="flex gap-2">
                   <Input
                     id="saldo-inicial"
@@ -146,7 +159,9 @@ const Dashboard = () => {
 
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg font-medium">Nova Transação</CardTitle>
+            <CardTitle className="text-lg font-medium">
+              Nova Transação
+            </CardTitle>
             <CardDescription>Adicione receitas ou despesas</CardDescription>
           </CardHeader>
           <CardContent>
@@ -161,7 +176,7 @@ const Dashboard = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="valor">Valor (R$)</Label>
@@ -176,7 +191,7 @@ const Dashboard = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="tipo">Tipo</Label>
                   <Select
@@ -193,7 +208,7 @@ const Dashboard = () => {
                   </Select>
                 </div>
               </div>
-              
+
               <Button type="submit" className="w-full">
                 Adicionar Transação
               </Button>
@@ -205,19 +220,19 @@ const Dashboard = () => {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Saldo Atual
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Saldo Atual</CardTitle>
             <Banknote className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(saldoAtual)}</div>
+            <div className="text-2xl font-bold">
+              {formatCurrency(saldoAtual)}
+            </div>
             <p className="text-xs text-muted-foreground">
               Saldo inicial: {formatCurrency(saldoInicial)}
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -226,13 +241,16 @@ const Dashboard = () => {
             <TrendingUp className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-500">{formatCurrency(receitasMes)}</div>
+            <div className="text-2xl font-bold text-emerald-500">
+              {formatCurrency(receitasMes)}
+            </div>
             <p className="text-xs text-muted-foreground">
-              {transacoesMes.filter(t => t.tipo === 'receita').length} transações
+              {transacoesMes.filter((t) => t.tipo === "receita").length}{" "}
+              transações
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -241,9 +259,12 @@ const Dashboard = () => {
             <TrendingDown className="h-4 w-4 text-rose-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-rose-500">{formatCurrency(despesasMes)}</div>
+            <div className="text-2xl font-bold text-rose-500">
+              {formatCurrency(despesasMes)}
+            </div>
             <p className="text-xs text-muted-foreground">
-              {transacoesMes.filter(t => t.tipo === 'despesa').length} transações
+              {transacoesMes.filter((t) => t.tipo === "despesa").length}{" "}
+              transações
             </p>
           </CardContent>
         </Card>
@@ -252,37 +273,47 @@ const Dashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle>Transações Recentes</CardTitle>
-          <CardDescription>
-            As últimas 5 transações registradas
-          </CardDescription>
+          <CardDescription>As últimas 5 transações registradas</CardDescription>
         </CardHeader>
         <CardContent>
           {ultimasTransacoes.length > 0 ? (
             <ul className="space-y-4">
               {ultimasTransacoes.map((t) => (
-                <li 
+                <li
                   key={t.id}
                   className="flex items-center justify-between p-3 rounded-md bg-secondary/50"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center",
-                      t.tipo === 'receita' ? "bg-emerald-100 text-emerald-500" : "bg-rose-100 text-rose-500"
-                    )}>
-                      {t.tipo === 'receita' ? <ArrowUpCircle className="w-5 h-5" /> : <ArrowDownCircle className="w-5 h-5" />}
+                    <div
+                      className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center",
+                        t.tipo === "receita"
+                          ? "bg-emerald-100 text-emerald-500"
+                          : "bg-rose-100 text-rose-500"
+                      )}
+                    >
+                      {t.tipo === "receita" ? (
+                        <ArrowUpCircle className="w-5 h-5" />
+                      ) : (
+                        <ArrowDownCircle className="w-5 h-5" />
+                      )}
                     </div>
                     <div>
                       <p className="font-medium">{t.descricao}</p>
                       <p className="text-xs text-muted-foreground">
-                        {t.data.toLocaleDateString('pt-BR')}
+                        {t.data.toLocaleDateString("pt-BR")}
                       </p>
                     </div>
                   </div>
-                  <span className={cn(
-                    "font-semibold",
-                    t.tipo === 'receita' ? "text-emerald-500" : "text-rose-500"
-                  )}>
-                    {t.tipo === 'receita' ? '+' : '-'} {formatCurrency(t.valor)}
+                  <span
+                    className={cn(
+                      "font-semibold",
+                      t.tipo === "receita"
+                        ? "text-emerald-500"
+                        : "text-rose-500"
+                    )}
+                  >
+                    {t.tipo === "receita" ? "+" : "-"} {formatCurrency(t.valor)}
                   </span>
                 </li>
               ))}
